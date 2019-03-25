@@ -83,11 +83,9 @@ class Callbacks(object):
             cv2.imwrite(str(args.dump_dir / f'{id_str}.png'),
                         state['dump_image'])
             state['dump_id'] += 1
-        # Reset all values
+        # Override open3D reset
         elif self.key == ord('R'):
-            state['angle_y'] = 0.
-            state['angle_z'] = 0.
-            state['radius'] = 0.
+            pass
         # Rotation around Y axis
         elif self.key == ord('F'):
             state['angle_y'] += 5
@@ -151,7 +149,8 @@ class Callbacks(object):
 
         intrinsic = intrinsic_matrix(state['focal'], cx=img_w/2, cy=img_h/2)
 
-        print(f'Azimuth:{pascal_az} Elevation:{angle_y} Radius:{radius}')
+        if args.verbose:
+            print(f'Azimuth:{pascal_az} Elevation:{angle_y} Radius:{radius}')
 
         extrinsic = pascal_vpoint_to_extrinsics(az_deg=pascal_az,
                                                 el_deg=90 - angle_y,
@@ -221,11 +220,12 @@ class Callbacks(object):
         gen_in_src = torch.cat([src_shaded_input.unsqueeze(0), src_parts_input.unsqueeze(0),
                                 src_central.unsqueeze(0), planes_warped], dim=1)
         net_image = to_image(state['net'](gen_in_src.to(args.device))[0], from_LAB=args.LAB)
-        out_image = np.concatenate([to_image(src_shaded_input, from_LAB=args.LAB),
+        out_image = np.concatenate([to_image(texture_src['src_image'],
+                                                        from_LAB=args.LAB),
+                                    to_image(src_shaded_input, from_LAB=args.LAB),
                                     to_image(src_parts_input, from_LAB=args.LAB),
                                     to_image(src_central, from_LAB=args.LAB),
-                                    net_image, to_image(texture_src['src_image'],
-                                                        from_LAB=args.LAB)], axis=1)
+                                    net_image], axis=1)
         state['dump_image'] = out_image
 
         cv2.imshow('Output', out_image)
@@ -272,7 +272,6 @@ def run(args: argparse.Namespace):
         ord('S'): Callbacks(ord('S')),
         ord('H'): Callbacks(ord('H')),
         ord('G'): Callbacks(ord('G')),
-        ord('R'): Callbacks(ord('R')),
         ord(' '): Callbacks(ord(' ')),
         ord('N'): Callbacks(ord('N')),
         ord('O'): Callbacks(ord('O')),
@@ -308,6 +307,8 @@ if __name__ == '__main__':
                         help='Device used for model inference')
     parser.add_argument('--demo', action='store_true',
                         help='Load a subset of dataset - faster to load.')
+    parser.add_argument('--verbose', action='store_true',
+                        help='Print spherical coordinates')
     args = parser.parse_args()
 
     args.LAB = True  # Expected arg for released model
@@ -321,6 +322,10 @@ if __name__ == '__main__':
         raise OSError('Please provide a valid file for pretrained weights.')
     if not args.CAD_root.is_dir():
         raise OSError('Please provide a valid CAD root.')
+
+    # Print help to console
+    with open('./help.txt') as help_file:
+        print(help_file.read())
 
     # Start the GUI
     run(args)

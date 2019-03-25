@@ -1,0 +1,27 @@
+*******************************************************************************
+*******************************************************************************
+                   Semi-parametric Object Synthesis
+				   
+Thank you for trying our interactive demo!
+
+Here you can load examples from Pascal3D+ and synthesize new views.
+
+Command list to move around (in spherical coordinates):
+
+	A - Decrement azimuth
+	S - Increment azimuth
+
+	D - Decrement elevation
+	F - Increment elevation
+
+	H - Increment radius
+	G - Decrement radius
+
+	N - Next CAD
+
+	SPACE - Next example
+
+	X - Save current image to dump directory
+
+*******************************************************************************
+*******************************************************************************
