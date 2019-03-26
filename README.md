@@ -8,6 +8,13 @@ Here you can find the code and supplementary material of ICCV2019 submission: **
 
 ## Code
 
+### How to run
+
+To run our demo code, you need to download the following.
+- Pascal3D+ vehicles dataset ([here](https://drive.google.com/open?id=1tP0MNK-505d8OWoyIp267JhkIfJt7jh1))
+- 3D CADs ([here](https://drive.google.com/open?id=1V5sysWzg-jVfY50cYZzjg6cgoIgzu8u0))
+- Pre-trained weights ([here](https://drive.google.com/open?id=1rF5sz_kXMmcu7wK9e6_PLqTh59GGIbuq))
+
 ### Description and usage
 
 Here you can find the instructions to run our demo code. The entry point is [`run_rotate.py`](https://github.com/iccv19sub265/semiparametric/blob/master/run_rotate.py).
