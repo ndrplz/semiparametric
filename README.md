@@ -8,9 +8,18 @@ Here you can find the code and supplementary material of ICCV2019 submission: **
 
 ## Code
 
+Here you can find the instructions to run our demo code. The entry point is [`run_rotate.py`](https://github.com/iccv19sub265/semiparametric/blob/master/run_rotate.py).
+When you run it, you should see a GUI like the following:
+
 <p align="center">
   <img src="imgs/viewport.png"/ alt="Viewport" width="80%">
 </p>
+
+The GUI is composed of two windows: the *viewport* and the *output* one.
+
+While the focus is on the *viewport*, keyboard can be used to move around the object in spherical coordinates. [Here](https://github.com/iccv19sub265/semiparametric/blob/master/help.txt) the full list of commands is provided. While you move, the *output* shows both ICN inputs (2.5D sketches, appearance prior) and network prediction. Please refer to Sec.3 of the paper for details.
+
+*Notice*: it may happen that when starting the program, open3D does not render anything. This is an initialization issue. In case this happens, just focus on the *viewport* and press spacebar a couple of times until you see both windows rendered properly.
 
 ## Supplementary Material
 
