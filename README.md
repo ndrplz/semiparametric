@@ -8,6 +8,16 @@ Here you can find the code and supplementary material of ICCV2019 submission: **
 
 ## Code
 
+### Install
+
+Run the following in a fresh Python 3.6 environment to install all dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Code was tested on Ubuntu linux only (16.04, 17.04).
+
 ### How to run
 
 To run our demo code, you need to download the following:
@@ -21,7 +31,7 @@ The entry point is [`run_rotate.py`](https://github.com/iccv19sub265/semiparamet
 
 Therefore, it can be run as follows:
 ```bash
-python run_rotate.py <data_root>/pascal_car <data_root>/weights.pth <data_root>/cad
+python run_rotate.py <data_root>/pascal_car <data_root>/weights.pth <data_root>/cad --device cpu
 ```
 
 ### Description and usage
