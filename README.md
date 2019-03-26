@@ -10,15 +10,23 @@ Here you can find the code and supplementary material of ICCV2019 submission: **
 
 ### How to run
 
-To run our demo code, you need to download the following.
-- Pascal3D+ vehicles dataset ([here](https://drive.google.com/open?id=1tP0MNK-505d8OWoyIp267JhkIfJt7jh1))
-- 3D CADs ([here](https://drive.google.com/open?id=1V5sysWzg-jVfY50cYZzjg6cgoIgzu8u0))
-- Pre-trained weights ([here](https://drive.google.com/open?id=1rF5sz_kXMmcu7wK9e6_PLqTh59GGIbuq))
+To run our demo code, you need to download the following:
+- Pascal3D+ vehicles dataset (`.zip` file [here](https://drive.google.com/open?id=1tP0MNK-505d8OWoyIp267JhkIfJt7jh1))
+- 3D CADs (`.zip` file [here](https://drive.google.com/open?id=1V5sysWzg-jVfY50cYZzjg6cgoIgzu8u0))
+- Pre-trained weights (`.pth` file [here](https://drive.google.com/open?id=1rF5sz_kXMmcu7wK9e6_PLqTh59GGIbuq))
+
+Extract both archives in a location of your choice `<data_root>`;  move there the pre-trained weights file too.
+
+The entry point is [`run_rotate.py`](https://github.com/iccv19sub265/semiparametric/blob/master/run_rotate.py). The script expects as mandatory arguments the car dataset, pre-trained weights and CAD dir.
+
+Therefore, it can be run as follows:
+```bash
+python run_rotate.py <data_root>/pascal_car <data_root>/weights.pth <data_root>/cad
+```
 
 ### Description and usage
 
-Here you can find the instructions to run our demo code. The entry point is [`run_rotate.py`](https://github.com/iccv19sub265/semiparametric/blob/master/run_rotate.py).
-When you run it, you should see a GUI like the following:
+If everything went well,, you should see a GUI like the following:
 
 <p align="center">
   <img src="imgs/viewport.png"/ alt="Viewport" width="80%">
