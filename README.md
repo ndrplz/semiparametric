@@ -6,6 +6,11 @@ Here you can find the code and supplementary material of ICCV2019 submission: **
   <img src="gifs/teaser_car_h.gif"/ alt="Rotating cars">
 </p>
 
+
+<p align="center">
+  <img src="gifs/teaser_chair.gif"/ alt="Rotating cars">
+</p>
+
 ## Code
 
 ### Install
