@@ -1,6 +1,8 @@
 # Semi-parametric Object Synthesis
 
-Here you can find the code and supplementary material of ICCV2019 submission: **Semi-parametric Object Synthesis**.
+## Paper
+
+**arXiv pre-print paper will be available here in a few days.**
 
 <p align="center">
   <img src="gifs/teaser_car_h.gif"/ alt="Rotating cars">
