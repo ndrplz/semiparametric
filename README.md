@@ -1,4 +1,4 @@
-# Semi-parametric Object Synthesis (Paper ID: 265)
+# Semi-parametric Object Synthesis
 
 Here you can find the code and supplementary material of ICCV2019 submission: **Semi-parametric Object Synthesis**.
 
