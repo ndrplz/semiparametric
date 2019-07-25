@@ -1,17 +1,18 @@
 # Semi-parametric Object Synthesis
 
-## Paper
-
-**arXiv pre-print paper will be available here in a few days.**
-
 <p align="center">
   <img src="gifs/teaser_car_h.gif"/ alt="Rotating cars">
 </p>
 
+## Abstract
 
-<p align="center">
-  <img src="gifs/teaser_chair.gif"/ alt="Rotating cars">
-</p>
+We present a new semi-parametric approach to synthesize novel views of an object from a single monocular image. First, we exploit man-made object symmetry and piece-wise planarity to integrate rich *a-priori* visual information into the novel viewpoint synthesis process. An *Image Completion Network* (ICN) then leverages 2.5D sketches rendered from a 3D CAD as guidance to generate a realistic image. In contrast to concurrent works, we do not rely solely on synthetic data but leverage instead existing datasets for 3D object detection to operate in a real-world scenario. Differently from competitors, our semi-parametric framework allows the handling of a wide range of 3D transformations. Thorough experimental analysis against state-of-the-art baselines shows the efficacy of our method both from a quantitative and a perceptive point of view.
+
+## Paper
+
+**arXiv pre-print paper will be available here in a few days.**
+
+
 
 ## Code
 
@@ -56,6 +57,12 @@ While the focus is on the *viewport*, keyboard can be used to move around the ob
 *Notice*: it may happen that when starting the program, open3D does not render anything. This is an initialization issue. In case this happens, just focus on the *viewport* and press spacebar a couple of times until you see both windows rendered properly.
 
 ## Supplementary Material
+
+### Other classes
+
+<p align="center">
+  <img src="gifs/teaser_chair.gif"/ alt="Rotating cars">
+</p>
 
 ### Extreme viewpoint transformations (see Sec. 4)
 
