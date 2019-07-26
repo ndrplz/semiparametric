@@ -10,7 +10,33 @@ We present a new semi-parametric approach to synthesize novel views of an object
 
 ## Paper
 
-**arXiv pre-print paper will be available here in a few days.**
+<p align="center">
+ <table>
+  <tr>
+  <td align="center"><a href="https://arxiv.org/abs/1907.10634" target="_blank"><img src="imgs/paper_thumb.png" width="200px"/></a></td>
+  </tr>
+  <tr>
+  <td><pre>  
+	@ARTICLE{2019arXiv190710634P,
+       author = {{Palazzi}, Andrea and {Bergamini}, Luca and {Calderara}, Simone and
+         {Cucchiara}, Rita},
+        title = "{Semi-parametric Object Synthesis}",
+      journal = {arXiv e-prints},
+     keywords = {Computer Science - Computer Vision and Pattern Recognition, Computer Science - Machine Learning, Electrical Engineering and Systems Science - Image and Video Processing},
+         year = "2019",
+        month = "Jul",
+          eid = {arXiv:1907.10634},
+        pages = {arXiv:1907.10634},
+archivePrefix = {arXiv},
+       eprint = {1907.10634},
+ primaryClass = {cs.CV},
+       adsurl = {https://ui.adsabs.harvard.edu/abs/2019arXiv190710634P},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+</pre></td>
+  </tr>
+</table> 
+</p>
 
 
 
