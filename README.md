@@ -17,20 +17,18 @@ We present a new semi-parametric approach to synthesize novel views of an object
   </tr>
   <tr>
   <td><pre>  
-	@ARTICLE{2019arXiv190710634P,
-       author = {{Palazzi}, Andrea and {Bergamini}, Luca and {Calderara}, Simone and
-         {Cucchiara}, Rita},
-        title = "{Semi-parametric Object Synthesis}",
-      journal = {arXiv e-prints},
-         year = "2019",
-        month = "Jul",
-          eid = {arXiv:1907.10634},
-        pages = {arXiv:1907.10634},
+@article{2019arXiv190710634P,
+author = {{Palazzi}, Andrea and {Bergamini}, Luca and {Calderara}, Simone and
+{Cucchiara}, Rita},
+title = "{Semi-parametric Object Synthesis}",
+journal = {arXiv e-prints},
+year = "2019",
+month = "Jul",
+eid = {arXiv:1907.10634},
+pages = {arXiv:1907.10634},
 archivePrefix = {arXiv},
-       eprint = {1907.10634},
- primaryClass = {cs.CV},
-       adsurl = {https://ui.adsabs.harvard.edu/abs/2019arXiv190710634P},
-      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+eprint = {1907.10634},
+primaryClass = {cs.CV},
 }
 </pre></td>
   </tr>
