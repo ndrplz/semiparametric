@@ -22,7 +22,6 @@ We present a new semi-parametric approach to synthesize novel views of an object
          {Cucchiara}, Rita},
         title = "{Semi-parametric Object Synthesis}",
       journal = {arXiv e-prints},
-     keywords = {Computer Science - Computer Vision and Pattern Recognition, Computer Science - Machine Learning, Electrical Engineering and Systems Science - Image and Video Processing},
          year = "2019",
         month = "Jul",
           eid = {arXiv:1907.10634},
