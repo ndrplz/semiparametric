@@ -87,6 +87,10 @@ Due to its *semi-parametric* nature, our method is much more robust than competi
 Here they are some examples:
 
 <p align="center">
+  <img src="gifs/chair_rotate_and_back.gif"/ alt="Backrotating chairs">
+</p>
+
+<p align="center">
   <img src="gifs/gif_zoom.gif"/ alt="Zoom gif" width="40%">
   </br> Manipulation of radial distance.
 </p>
