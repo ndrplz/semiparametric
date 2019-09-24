@@ -82,28 +82,15 @@ While the focus is on the *viewport*, keyboard can be used to move around the ob
 
 ### Extreme viewpoint transformations (see Sec. 4)
 
-Due to its *semi-parametric* nature, our method is much more robust than competitors to extreme viewpoint changes.
+**Due to its *semi-parametric* nature, our method can handle extreme viewpoint changes.**
 
-Here they are some examples:
+Manipulating radius        |  Manipulation elevation   | Arbitrary rototranslation
+:-------------------------:|:-------------------------:|:-------------------------:
+![](gifs/gif_zoom.gif)     |![](gifs/gif_elevation.gif)     |  ![](gifs/gif_pickup.gif)
 
-<p align="center">
-  <img src="gifs/chair_rotate_and_back.gif"/ alt="Backrotating chairs">
-</p>
-
-<p align="center">
-  <img src="gifs/gif_zoom.gif"/ alt="Zoom gif" width="40%">
-  </br> Manipulation of radial distance.
-</p>
-
-<p align="center">
-  <img src="gifs/gif_elevation.gif"/ alt="Elevation gif" width="40%">
-  </br> Manipulation of elevation.
-</p>
-
-<p align="center">
-  <img src="gifs/gif_pickup.gif"/ alt="Rototranslation gif" width="40%">
-  </br> Arbitrary rototranslation.
-</p>
+Chairs backflip                      |
+:-----------------------------------:|
+![](gifs/chair_rotate_and_back.gif)  |
 
 ### Data augmentation (see Sec. 4.4)
 
