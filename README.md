@@ -107,4 +107,31 @@ Percentage of Correct Keypoints (PCK) logged in TensorBoard during training (see
   <img src="imgs/pck_graph.png"/ alt="PCK graph" width="80%">
 </p>
 
+---
+
+## Datasets ([link](https://drive.google.com/open?id=1P_AkpS0NlaNnU7JxU6-faB0uOmR0mX6s) for download)
+
+We publicly release two datasets of 3D models (*cars*, and *chairs*) with annotated 3D keypoints.
+
+#### Dataset structure
+Currently, there are 59 annotated models for car and 73 for chair.
+
+3D models come from [ShapeNet](https://www.shapenet.org/) and have been converted in `.ply` format (with colors).
+
+Each example of the datasets is composed of the following components:
+* One `.ply` file containing the 3D model mesh and colors.
+* One `.yaml` file containing the 3D keypoints annotation
+* One `.jpg` image of the model thumbnail.
+
+#### Annotation
+Annotated keypoints are the ones in [Pascal3D+](http://cvgl.stanford.edu/projects/pascal3d.html): 12 for cars and 10 for chairs.
+
+Car keypoints: *front wheel*, *back_wheel*, *upper windshield*, *upper rearwindow*, *front light*, *back trunk* (2x, left and right).
+Chair keypoints: *back upper*, *seat upper*, *seat lower*, *leg upper*, *leg lower* (2x, left and right).
+
+#### Terms of use
+
+We believe that research should be as open as possible and we are happy if these datasets can be helpful for your research too. If you use these data, please cite [our research work](https://github.com/ndrplz/semiparametric#paper).
+
+Since 3D models come from ShapeNet database, if you use this dataset you agree to ShapeNet [terms of use](https://www.shapenet.org/terms).
 
