@@ -130,7 +130,8 @@ Each example of the datasets is composed of the following components:
 #### Annotation
 Annotated keypoints are the ones in [Pascal3D+](http://cvgl.stanford.edu/projects/pascal3d.html): 12 for cars and 10 for chairs.
 
-Car keypoints: *front wheel*, *back_wheel*, *upper windshield*, *upper rearwindow*, *front light*, *back trunk* (2x, left and right).
+Car keypoints: *front wheel*, *back wheel*, *upper windshield*, *upper rearwindow*, *front light*, *back trunk* (2x, left and right).
+
 Chair keypoints: *back upper*, *seat upper*, *seat lower*, *leg upper*, *leg lower* (2x, left and right).
 
 #### Terms of use
