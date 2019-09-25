@@ -111,7 +111,11 @@ Percentage of Correct Keypoints (PCK) logged in TensorBoard during training (see
 
 ## Datasets ([link](https://drive.google.com/open?id=1P_AkpS0NlaNnU7JxU6-faB0uOmR0mX6s) for download)
 
-We publicly release two datasets of 3D models (*cars*, and *chairs*) with annotated 3D keypoints.
+<p align="center">
+  <img src="imgs/synth_dataset_banner.png"/ alt="Viewport" width="90%">
+</p>
+
+**We release two datasets of 3D models (*cars*, *chairs*) with annotated 3D keypoints.**
 
 #### Dataset structure
 Currently, there are 59 annotated models for car and 73 for chair.
