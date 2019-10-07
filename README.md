@@ -44,19 +44,15 @@ Code was tested on Ubuntu linux only (16.04, 17.04).
 
 ### How to run
 
-To run our demo code, you need to download the following:
-- Pascal3D+ vehicles dataset (`.zip` file [here](https://drive.google.com/open?id=1tP0MNK-505d8OWoyIp267JhkIfJt7jh1))
-- 3D CADs (`.zip` file [here](https://drive.google.com/open?id=1V5sysWzg-jVfY50cYZzjg6cgoIgzu8u0))
-- Pre-trained weights (`.pth` file [here](https://drive.google.com/open?id=1rF5sz_kXMmcu7wK9e6_PLqTh59GGIbuq))
+To run the demo code, please download and unzip all the data from [this shared directory](https://drive.google.com/open?id=1ZEDvmKjcEHsPTtQX9GQ8GWecKqfSZsGw) in a `<data_root>` of your choice.
 
-Extract both archives in a location of your choice `<data_root>`;  move there the pre-trained weights file too.
+The entry point is [`run_rotate.py`](https://github.com/iccv19sub265/semiparametric/blob/master/run_rotate.py). The script expects as mandatory arguments the object class, pascal dataset, pre-trained weights and 3D models dir.
 
-The entry point is [`run_rotate.py`](https://github.com/iccv19sub265/semiparametric/blob/master/run_rotate.py). The script expects as mandatory arguments the car dataset, pre-trained weights and CAD dir.
-
-Therefore, it can be run as follows:
+For the *car* class it can be run as follows:
 ```bash
-python run_rotate.py <data_root>/pascal_car <data_root>/weights.pth <data_root>/cad --device cpu
+python run_rotate.py car <data_root>/pascal_car <data_root>/car_icn.pth <data_root>/car_cads --device cpu
 ```
+replace *chair* with *car* to run on the chair class.
 
 ### Description and usage
 
