@@ -133,6 +133,9 @@ class Callbacks(object):
         else:
             raise NotImplementedError()
 
+        # Set normal colors to the mesh
+        state['geometries']['car_mesh'].vertex_colors = o3d.Vector3dVector(state['normal_vertex_colors'])
+
         # Move Camera
         angle_y = np.clip(state['angle_y'], -90, 90)
         radius = np.clip(state['radius'], 0, state['radius'])
@@ -168,9 +171,6 @@ class Callbacks(object):
         else:
             src_normal = cv2.cvtColor(src_normal, cv2.COLOR_RGB2BGR)
 
-        state['geometries']['car_mesh'].vertex_colors = o3d.Vector3dVector(state['normal_vertex_colors'])
-        vis.update_geometry()
-
         # Project model kpoints in 2D
         kpoints_2d_step_dict = {}
         for k_name, k_val in state['kpoints_3d'].items():
@@ -191,7 +191,6 @@ class Callbacks(object):
                                  pascal_class=args.pascal_class,
                                  vis_oracle=state['vis_oracle'])
         _, dst_kpoints_planes, dst_visibilities = dst_pl_info
-
 
         texture_src = state['texture_src']
         src_planes = np.asarray([to_image(i, from_LAB=args.LAB) for i in texture_src['planes']])
