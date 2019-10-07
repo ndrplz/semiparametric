@@ -1,7 +1,7 @@
 # Semi-parametric Object Synthesis
 
 <p align="center">
-  <img src="gifs/teaser_car_h.gif"/ alt="Rotating cars">
+  <img src="gifs/teaser_car.gif"/ alt="Rotating cars">
 </p>
 
 ## Abstract
