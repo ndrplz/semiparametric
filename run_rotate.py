@@ -6,8 +6,9 @@ import collections
 from pathlib import Path
 
 import cv2
+import numpy as np
+import open3d as o3d
 import torch
-from open3d import *  # watch out, this also contains `Image`
 from PIL import Image
 from torchvision.transforms import Normalize
 from torchvision.transforms import ToTensor
@@ -25,7 +26,7 @@ from utils.normalization import to_image
 from utils.open3d import color_mesh_from_obj
 
 
-def align_view(vis: VisualizerWithKeyCallback,
+def align_view(vis: o3d.VisualizerWithKeyCallback,
                focal: int, extrinsic: np.ndarray):
     """ Implement look-at to the origin """
 
@@ -116,7 +117,7 @@ class Callbacks(object):
             cad_idx = state['cad_idx']
             model_path = args.CAD_root / f'pascal_car_cad_{cad_idx:03d}.ply'
             kpoints_3d = state['car_cad_kpoints_3D'][cad_idx].astype(np.float32)
-            car_mesh = read_triangle_mesh(str(model_path))
+            car_mesh = o3d.read_triangle_mesh(str(model_path))
 
             # ------------------- Compute normal Colors ----------------------
             car_mesh.compute_vertex_normals()
@@ -129,7 +130,7 @@ class Callbacks(object):
                                 base_color=color_dict['car'])
             part_vertex_colors = np.asarray(car_mesh.vertex_colors).copy()
             # Reset colors to normals
-            car_mesh.vertex_colors = Vector3dVector(normal_vertex_colors)
+            car_mesh.vertex_colors = o3d.Vector3dVector(normal_vertex_colors)
 
             if 'car_mesh' not in state['geometries']:
                 state['geometries']['car_mesh'] = car_mesh
@@ -161,7 +162,7 @@ class Callbacks(object):
             vis.update_geometry()  # we don't have anything, return
             return
         align_view(vis, focal=state['focal'], extrinsic=extrinsic)
-        vis.get_render_option().mesh_color_option = MeshColorOption.Color
+        vis.get_render_option().mesh_color_option = o3d.MeshColorOption.Color
         vis.get_render_option().light_on = False
         vis.get_render_option().background_color = (0, 0, 0)
 
@@ -174,7 +175,7 @@ class Callbacks(object):
             src_shaded = cv2.cvtColor(src_shaded, cv2.COLOR_RGB2BGR)
 
         # ---------------------- Parts ----------------------------------------
-        state['geometries']['car_mesh'].vertex_colors = Vector3dVector(part_vertex_colors)
+        state['geometries']['car_mesh'].vertex_colors = o3d.Vector3dVector(part_vertex_colors)
         vis.update_geometry()
         src_parts = np.asarray(vis.capture_screen_float_buffer(do_render=True))
         src_parts = (src_parts * 255).astype(np.uint8)
@@ -183,7 +184,7 @@ class Callbacks(object):
         else:
             src_parts = cv2.cvtColor(src_parts, cv2.COLOR_RGB2BGR)
 
-        state['geometries']['car_mesh'].vertex_colors = Vector3dVector(normal_vertex_colors)
+        state['geometries']['car_mesh'].vertex_colors = o3d.Vector3dVector(normal_vertex_colors)
         vis.update_geometry()
 
         # Project model kpoints in 2D
@@ -251,6 +252,7 @@ def run(args: argparse.Namespace):
     }
 
     # Load pre-trained model
+    # todo num of channels must depend on the class
     net = G_Resnet(input_nc=24).to(args.device)
     net.load_state_dict(torch.load(args.model_path))
     net.eval()
@@ -280,13 +282,13 @@ def run(args: argparse.Namespace):
     }
 
     # Init callbacks
-    Callbacks(ord('N'))(Visualizer())  # init model
-    Callbacks(ord(' '))(Visualizer())  # init appearance
-    Callbacks(0)(Visualizer())
-    draw_geometries_with_key_callbacks(state['geometries'].as_list(),
-                                       key_callbacks,
-                                       width=img_w, height=img_h,
-                                       left=50, top=1080//4)
+    Callbacks(ord('N'))(o3d.Visualizer())  # init model
+    Callbacks(ord(' '))(o3d.Visualizer())  # init appearance
+    Callbacks(0)(o3d.Visualizer())
+    o3d.draw_geometries_with_key_callbacks(state['geometries'].as_list(),
+                                           key_callbacks,
+                                           width=img_w, height=img_h,
+                                           left=50, top=1080//4)
     cv2.namedWindow('Projection')
 
 
