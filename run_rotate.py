@@ -16,14 +16,13 @@ from torchvision.transforms import ToTensor
 from datasets.dataset_texture import TextureDatasetWithNormal
 from datasets.dataset_texture import get_planes
 from datasets.dataset_texture import warp_unwarp_planes
-from datasets.interop import pascal_idx_to_kpoint
-from datasets.interop import pascal_parts_colors
 from model.von import G_Resnet
 from utils.geometry import intrinsic_matrix
 from utils.geometry import pascal_vpoint_to_extrinsics
 from utils.geometry import project_points
+from utils.misc import load_yaml_file
 from utils.normalization import to_image
-from utils.open3d import color_mesh_from_obj
+from utils.visibility import VisibilityOracle
 
 
 def align_view(vis: o3d.VisualizerWithKeyCallback,
@@ -65,10 +64,6 @@ class Callbacks(object):
     def __call__(self, vis):
 
         global state
-        global kpoints_3d
-        global normal_vertex_colors
-        global part_vertex_colors
-        global texture_src
 
         # Do nothing
         if self.key == 0:
@@ -105,7 +100,7 @@ class Callbacks(object):
             state['radius'] -= 0.05
         # Next dataset example
         elif self.key == ord(' '):
-            texture_src = state['dataset'][state['dataset_index']]
+            state['texture_src'] = state['dataset'][state['dataset_index']]
             state['dataset_index'] += 1
         # Next CAD model
         elif self.key == ord('N'):
@@ -113,24 +108,19 @@ class Callbacks(object):
             if state['cad_idx'] == 10:
                 state['cad_idx'] = 0
 
-            # --------------- Update model and Kpoints 3D ----------------------
+            # Update model and 3D keypoints
             cad_idx = state['cad_idx']
             model_path = args.CAD_root / f'pascal_car_cad_{cad_idx:03d}.ply'
-            kpoints_3d = state['car_cad_kpoints_3D'][cad_idx].astype(np.float32)
+
+            # Load 3D keypoints for current model
+            yaml_file = model_path.parent / (model_path.stem + '.yaml')
+            state['kpoints_3d'] = load_yaml_file(yaml_file)['kpoints_3d']
+
             car_mesh = o3d.read_triangle_mesh(str(model_path))
 
-            # ------------------- Compute normal Colors ----------------------
+            # Compute normal colors
             car_mesh.compute_vertex_normals()
-            normal_vertex_colors = (np.asarray(car_mesh.vertex_normals) + 1) / 2.
-
-            # -------------------- Compute Parts Colors ------------------------
-            color_dict = pascal_parts_colors['car']
-            obj_path = model_path.parent / (model_path.stem + '.obj')
-            color_mesh_from_obj(car_mesh, obj_name=obj_path, mtl_to_color=color_dict,
-                                base_color=color_dict['car'])
-            part_vertex_colors = np.asarray(car_mesh.vertex_colors).copy()
-            # Reset colors to normals
-            car_mesh.vertex_colors = o3d.Vector3dVector(normal_vertex_colors)
+            state['normal_vertex_colors'] = (np.asarray(car_mesh.vertex_normals) + 1) / 2.
 
             if 'car_mesh' not in state['geometries']:
                 state['geometries']['car_mesh'] = car_mesh
@@ -143,10 +133,12 @@ class Callbacks(object):
         else:
             raise NotImplementedError()
 
-        # -------------------------- Move Camera ------------------------------
+        # Move Camera
         angle_y = np.clip(state['angle_y'], -90, 90)
         radius = np.clip(state['radius'], 0, state['radius'])
+
         pascal_az = (state['angle_z'] + 90) % 360
+        pascal_el = 90 - angle_y
 
         intrinsic = intrinsic_matrix(state['focal'], cx=img_w/2, cy=img_h/2)
 
@@ -154,10 +146,9 @@ class Callbacks(object):
             print(f'Azimuth:{pascal_az} Elevation:{angle_y} Radius:{radius}')
 
         extrinsic = pascal_vpoint_to_extrinsics(az_deg=pascal_az,
-                                                el_deg=90 - angle_y,
+                                                el_deg=pascal_el,
                                                 radius=radius)
 
-        # ---------------------- Start Rendering ------------------------------
         if not vis.get_render_option() or not vis.get_view_control():
             vis.update_geometry()  # we don't have anything, return
             return
@@ -167,38 +158,42 @@ class Callbacks(object):
         vis.get_render_option().background_color = (0, 0, 0)
 
         # ---------------------- Normal ---------------------------------------
-        src_shaded = np.asarray(vis.capture_screen_float_buffer(do_render=True))
-        src_shaded = (src_shaded * 255).astype(np.uint8)
-        if args.LAB:
-            src_shaded = cv2.cvtColor(src_shaded, cv2.COLOR_RGB2LAB)
-        else:
-            src_shaded = cv2.cvtColor(src_shaded, cv2.COLOR_RGB2BGR)
+        src_normal = np.asarray(vis.capture_screen_float_buffer(do_render=True))
+        src_normal = (src_normal * 255).astype(np.uint8)
+        object_mask = np.all(src_normal == 0, axis=-1)
 
-        # ---------------------- Parts ----------------------------------------
-        state['geometries']['car_mesh'].vertex_colors = o3d.Vector3dVector(part_vertex_colors)
-        vis.update_geometry()
-        src_parts = np.asarray(vis.capture_screen_float_buffer(do_render=True))
-        src_parts = (src_parts * 255).astype(np.uint8)
+        # todo LAB should be default behavior
         if args.LAB:
-            src_parts = cv2.cvtColor(src_parts, cv2.COLOR_RGB2LAB)
+            src_normal = cv2.cvtColor(src_normal, cv2.COLOR_RGB2LAB)
         else:
-            src_parts = cv2.cvtColor(src_parts, cv2.COLOR_RGB2BGR)
+            src_normal = cv2.cvtColor(src_normal, cv2.COLOR_RGB2BGR)
 
-        state['geometries']['car_mesh'].vertex_colors = o3d.Vector3dVector(normal_vertex_colors)
+        state['geometries']['car_mesh'].vertex_colors = o3d.Vector3dVector(state['normal_vertex_colors'])
         vis.update_geometry()
 
         # Project model kpoints in 2D
-        kpoints_2d_step = project_points(kpoints_3d, intrinsic, extrinsic)
-        kpoints_2d_step /= (img_w, img_h)
-        kpoints_2d_step = np.clip(kpoints_2d_step, -1, 1)
-        kpoints_2d_step_dict = {pascal_idx_to_kpoint['car'][i]: kpoints_2d_step[i]
-                                for i in range(kpoints_2d_step.shape[0])}
+        kpoints_2d_step_dict = {}
+        for k_name, k_val in state['kpoints_3d'].items():
+            point_3d = np.asarray([k_val])
+            kpoints_2d_step = project_points(point_3d, intrinsic, extrinsic)
+            kpoints_2d_step /= (img_w, img_h)
+            kpoints_2d_step = np.clip(kpoints_2d_step, -1, 1)
+            kpoints_2d_step_dict[k_name] = kpoints_2d_step.squeeze(0)
 
-        meta = {'kpoints_2d': kpoints_2d_step_dict,
-                'vpoint': [pascal_az]}
+        meta = {
+            'kpoints_2d': kpoints_2d_step_dict,
+            'vpoint': [pascal_az, pascal_el],
+            'cad_idx': state['cad_idx']
+        }
 
-        _, dst_kpoints_planes, dst_visibilities = get_planes(np.zeros((img_h, img_w, 3)),
-                                                             meta=meta, pascal_class='car')
+        dst_pl_info = get_planes(np.zeros((img_h, img_w, 3)),
+                                 meta=meta,
+                                 pascal_class=args.pascal_class,
+                                 vis_oracle=state['vis_oracle'])
+        _, dst_kpoints_planes, dst_visibilities = dst_pl_info
+
+
+        texture_src = state['texture_src']
         src_planes = np.asarray([to_image(i, from_LAB=args.LAB) for i in texture_src['planes']])
         src_kpoints_planes = texture_src['src_kpoints_planes']
         src_visibilities = texture_src['src_vs']
@@ -208,25 +203,28 @@ class Callbacks(object):
                                                             dst_planes_kpoints=dst_kpoints_planes,
                                                             src_visibilities=src_visibilities,
                                                             dst_visibilities=dst_visibilities,
-                                                            pascal_class='car')
+                                                            pascal_class=args.pascal_class)
 
         planes_warped = TextureDatasetWithNormal.planes_to_torch(planes_warped, to_LAB=args.LAB)
         planes_warped = planes_warped.reshape(1, planes_warped.shape[0] * planes_warped.shape[1],
                                               planes_warped.shape[2], planes_warped.shape[3])
 
-        src_shaded_input = Normalize(mean=[0.5]*3, std=[0.5]*3)(ToTensor()((Image.fromarray(src_shaded))))
-        src_parts_input = Normalize(mean=[0.5]*3, std=[0.5]*3)(ToTensor()((Image.fromarray(src_parts))))
+        src_sketch_input = Normalize(mean=[0.5]*3, std=[0.5]*3)(ToTensor()((Image.fromarray(src_normal))))
         src_central = texture_src['src_central']
 
-        gen_in_src = torch.cat([src_shaded_input.unsqueeze(0), src_parts_input.unsqueeze(0),
-                                src_central.unsqueeze(0), planes_warped], dim=1)
-        net_image = to_image(state['net'](gen_in_src.to(args.device))[0], from_LAB=args.LAB)
-        out_image = np.concatenate([to_image(texture_src['src_image'],
-                                                        from_LAB=args.LAB),
-                                    to_image(src_shaded_input, from_LAB=args.LAB),
-                                    to_image(src_parts_input, from_LAB=args.LAB),
+        gen_in_src = torch.cat([src_sketch_input.unsqueeze(0), src_central.unsqueeze(0),
+                                planes_warped], dim=1).to(args.device)
+
+        net_image = to_image(state['net'](gen_in_src)[0], from_LAB=args.LAB)
+
+        # Use the normal image to mask artifacts
+        net_image[object_mask] = 255
+
+        out_image = np.concatenate([to_image(src_sketch_input, from_LAB=args.LAB),
                                     to_image(src_central, from_LAB=args.LAB),
-                                    net_image], axis=1)
+                                    net_image,
+                                    to_image(texture_src['src_image'], from_LAB=args.LAB)],
+                                   axis=1)
         state['dump_image'] = out_image
 
         cv2.imshow('Output', out_image)
@@ -243,7 +241,6 @@ def run(args: argparse.Namespace):
         'angle_y': 90.,
         'angle_z': 0.,
         'cad_idx': 0,
-        'car_cad_kpoints_3D': np.load(args.CAD_root / 'cad_car.npz')['kpoints'],
         'dataset_index': 0,
         'dump_id': 0,
         'focal': 1000,
@@ -252,20 +249,25 @@ def run(args: argparse.Namespace):
     }
 
     # Load pre-trained model
-    # todo num of channels must depend on the class
-    net = G_Resnet(input_nc=24).to(args.device)
+    input_nc = 21 if args.pascal_class == 'car' else 18
+    net = G_Resnet(input_nc).to(args.device)
     net.load_state_dict(torch.load(args.model_path))
     net.eval()
 
     state['net'] = net
 
     # Load test dataset
-    dataset = TextureDatasetWithNormal(folder=args.texture_dataset_dir,
+    dataset = TextureDatasetWithNormal(dataset_dir=args.texture_dataset_dir,
+                                       visibility_dir=args.CAD_root,
                                        resize_factor=0.5,
                                        demo_mode=args.demo,
                                        use_LAB=args.LAB)
     dataset.eval()
     state['dataset'] = dataset
+
+    # Visibility Oracle
+    vis_oracle = VisibilityOracle(args.pascal_class, args.CAD_root)
+    state['vis_oracle'] = vis_oracle
 
     key_callbacks = {
         ord('F'): Callbacks(ord('F')),
@@ -297,6 +299,7 @@ if __name__ == '__main__':
     img_h = img_w = 128
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('pascal_class', type=str, choices=['car', 'chair'])
     parser.add_argument('texture_dataset_dir', type=Path,
                         help='Texture dataset directory')
     parser.add_argument('model_path', type=Path,
