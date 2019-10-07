@@ -110,31 +110,31 @@ class Callbacks(object):
 
             # Update model and 3D keypoints
             cad_idx = state['cad_idx']
-            model_path = args.CAD_root / f'pascal_car_cad_{cad_idx:03d}.ply'
+            model_path = args.CAD_root / f'pascal_{state["pascal_class"]}_cad_{cad_idx:03d}.ply'
 
             # Load 3D keypoints for current model
             yaml_file = model_path.parent / (model_path.stem + '.yaml')
             state['kpoints_3d'] = load_yaml_file(yaml_file)['kpoints_3d']
 
-            car_mesh = o3d.read_triangle_mesh(str(model_path))
+            mesh = o3d.read_triangle_mesh(str(model_path))
 
             # Compute normal colors
-            car_mesh.compute_vertex_normals()
-            state['normal_vertex_colors'] = (np.asarray(car_mesh.vertex_normals) + 1) / 2.
+            mesh.compute_vertex_normals()
+            state['normal_vertex_colors'] = (np.asarray(mesh.vertex_normals) + 1) / 2.
 
-            if 'car_mesh' not in state['geometries']:
-                state['geometries']['car_mesh'] = car_mesh
+            if 'mesh' not in state['geometries']:
+                state['geometries']['mesh'] = mesh
             else:
-                state['geometries']['car_mesh'].vertices = car_mesh.vertices
-                state['geometries']['car_mesh'].vertex_colors = car_mesh.vertex_colors
-                state['geometries']['car_mesh'].vertex_normals = car_mesh.vertex_normals
-                state['geometries']['car_mesh'].triangles = car_mesh.triangles
+                state['geometries']['mesh'].vertices = mesh.vertices
+                state['geometries']['mesh'].vertex_colors = mesh.vertex_colors
+                state['geometries']['mesh'].vertex_normals = mesh.vertex_normals
+                state['geometries']['mesh'].triangles = mesh.triangles
 
         else:
             raise NotImplementedError()
 
         # Set normal colors to the mesh
-        state['geometries']['car_mesh'].vertex_colors = o3d.Vector3dVector(state['normal_vertex_colors'])
+        state['geometries']['mesh'].vertex_colors = o3d.Vector3dVector(state['normal_vertex_colors'])
 
         # Move Camera
         angle_y = np.clip(state['angle_y'], -90, 90)
@@ -237,6 +237,7 @@ def run(args: argparse.Namespace):
 
     # Initialize state
     state = {
+        'pascal_class': args.pascal_class,
         'angle_y': 90.,
         'angle_z': 0.,
         'cad_idx': 0,
