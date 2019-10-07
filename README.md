@@ -74,7 +74,7 @@ While the focus is on the *viewport*, keyboard can be used to move around the ob
 
 ## Supplementary Material
 
-### Other classes
+### Results for *chair* class
 
 <p align="center">
   <img src="gifs/teaser_chair.gif"/ alt="Rotating cars">
