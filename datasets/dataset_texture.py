@@ -9,7 +9,6 @@ from torchvision.transforms import ToTensor
 
 from datasets.dataset_stick import StickDataset
 from datasets.interop import pascal_texture_planes
-from utils.augmentation import MyRandomAffine
 from utils.visibility import VisibilityOracle
 
 
@@ -99,12 +98,12 @@ class TextureDatasetWithNormal(StickDataset):
     def __init__(self, dataset_dir: Path,
                  visibility_dir: Path,
                  ext: str = '*.png', resize_factor: float = 1.0,
-                 demo_mode: bool = False, do_augmentation: bool = False,
-                 use_LAB: bool = True, quantize_central: bool = False,
+                 demo_mode: bool = False, use_LAB: bool = True,
+                 quantize_central: bool = False,
                  ):
 
         super(TextureDatasetWithNormal, self).__init__(dataset_dir, ext, resize_factor,
-                                                       demo_mode, do_augmentation, use_LAB)
+                                                       demo_mode, use_LAB)
 
         self.quantize_central = quantize_central
 
@@ -205,10 +204,6 @@ class TextureDatasetWithNormal(StickDataset):
         planes_warped, planes_unwarped = warp_unwarp_planes(src_planes, src_kpoints_planes, dst_kpoints_planes,
                                                             src_visibilities, dst_visibilities, pascal_class)
 
-        # todo: two rows below are necessary for `augment_pascal.py` script
-        # planes_warped, planes_unwarped = warp_unwarp_planes(dst_planes, dst_kpoints_planes, src_kpoints_planes,
-        #                                                     dst_visibilities, src_visibilities, pascal_class)
-
         # Compute masks for both src and dst images
         bg_thresh = 20
         bg_color = 255
@@ -221,25 +216,6 @@ class TextureDatasetWithNormal(StickDataset):
         dst_bg_mask = np.all(dst_normal <= bg_thresh, axis=-1)
         dst_bg_mask = np.tile(dst_bg_mask[..., np.newaxis], [1, 1, 3])
         dst_image_masked[dst_bg_mask] = bg_color
-
-        src_fg_mask = np.bitwise_not(src_bg_mask).astype(np.uint8)
-        dst_fg_mask = np.bitwise_not(dst_bg_mask).astype(np.uint8)
-
-        # Data augmentation: all images and planes undergo the same warp
-        if self.do_augmentation:
-            # todo: notice that kpoints are not transformed
-            affine = MyRandomAffine(degrees=10, translate=(0.1, 0.1),
-                                    fillcolor=(0, 0, 0), shear=10,
-                                    resample=Image.BICUBIC)
-            affine.sample_params(w=w, h=h)
-
-            src_planes = affine(*src_planes)
-            planes_unwarped = affine(*planes_unwarped)
-            src_normal = affine(src_normal)
-            src_image = affine(src_image)
-            src_image_masked = affine(src_image_masked,
-                                      fillcolor=(255, 255, 255))
-            src_fg_mask = affine(src_fg_mask)
 
         # Achtung! Make sure the same normalization is used for training
         planes_unwarped = self.planes_to_torch(planes_unwarped, to_LAB=self.use_LAB)
@@ -271,10 +247,6 @@ class TextureDatasetWithNormal(StickDataset):
         if type(src_cad_idx) == str:
             src_cad_idx = -1  # todo: for shapenet cads
 
-        # Pre-process foreground mask
-        src_fg_mask = np.any(src_fg_mask, axis=-1, keepdims=True)
-        src_fg_mask = torch.from_numpy(src_fg_mask.transpose(2, 0, 1)).float()
-
         return {
             'src_kpoints_planes': src_kpoints_planes,
             'dst_kpoints_planes': dst_kpoints_planes,
@@ -288,15 +260,12 @@ class TextureDatasetWithNormal(StickDataset):
             'src_image': src_image,  # source image
             'dst_image': dst_image,  # Destination image
             'src_cad_idx': src_cad_idx,
-            # todo: `image_meta` breaks mixed training but is still needed for competitors_predict.py
-            # 'image_meta': src_meta,
             'src_image_masked': src_image_masked,
             'dst_image_masked': dst_image_masked,
             'dst_log_image': dst_log_image,
             'src_log_image': src_log_image,
             'src_central': src_central_crop,
             'dst_central': dst_central_crop,
-            'src_fg_mask': src_fg_mask
         }
 
     def to_torch(self, x: np.ndarray, to_LAB: bool):

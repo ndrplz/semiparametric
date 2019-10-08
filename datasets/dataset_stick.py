@@ -1,22 +1,19 @@
-from PIL import Image
 from pathlib import Path
 
 import cv2
 import numpy as np
 import torch
 import yaml
+from PIL import Image
 from prettytable import PrettyTable
 from torch.utils.data import Dataset
 from torchvision.transforms import Normalize
 from torchvision.transforms import ToTensor
 
-from utils.augmentation import MyRandomAffine
-
 
 class StickDataset(Dataset):
     def __init__(self, folder: Path, ext: str='*.png', resize_factor: float=1.0,
-                 demo_mode: bool=False, do_augmentation: bool=False, use_LAB: bool=True):
-        self.do_augmentation = do_augmentation
+                 demo_mode: bool=False, use_LAB: bool=True):
 
         self.folder = Path(folder)
         if not self.folder.exists():
@@ -42,14 +39,6 @@ class StickDataset(Dataset):
         print('Done.')
 
     def prepare_example(self, image, image_stick, image_meta):
-        if self.do_augmentation:
-            h, w = image.shape[:2]
-            affine = MyRandomAffine(degrees=10, translate=(0.1, 0.1),
-                                    fillcolor=(0, 0, 0), shear=10,
-                                    resample=Image.BICUBIC)
-            affine.sample_params(w=w, h=h)
-            image_stick = affine(image_stick)
-            image = affine(image)
 
         # Convert all images to CIE-LAB color space
         image_input = image
