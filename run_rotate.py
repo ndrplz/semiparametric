@@ -71,13 +71,14 @@ class Callbacks(object):
         # Dump current output window
         elif self.key == ord('X'):
             args.dump_dir.mkdir(exist_ok=True)
-            el = int(state['angle_y'])
-            az = int(state['angle_z'])
+            pascal_az = (int(state['angle_z']) + 90) % 360
+            pascal_el = 90 - int(state['angle_y'])
             rad = int(state['radius'])
             d_id = state['dump_id']
-            id_str = f'{d_id:03d}_el_{el:03d}_az_{az:03d}_rad_{rad:03d}'
-            cv2.imwrite(str(args.dump_dir / f'{id_str}.png'),
-                        state['dump_image'])
+            id_str = f'{d_id:03d}_el_{pascal_el:03d}_az_{pascal_az:03d}_rad_{rad:03d}'
+            dump_image_path = str(args.dump_dir / f'{id_str}.png')
+            cv2.imwrite(dump_image_path, state['dump_image'])
+            print(f'Saved {dump_image_path}.')
             state['dump_id'] += 1
         # Override open3D reset
         elif self.key == ord('R'):
@@ -160,7 +161,7 @@ class Callbacks(object):
         vis.get_render_option().light_on = False
         vis.get_render_option().background_color = (0, 0, 0)
 
-        # ---------------------- Normal ---------------------------------------
+        # Capture normal 2.5D sketch
         src_normal = np.asarray(vis.capture_screen_float_buffer(do_render=True))
         src_normal = (src_normal * 255).astype(np.uint8)
         object_mask = np.all(src_normal == 0, axis=-1)
