@@ -165,11 +165,10 @@ class Callbacks(object):
         src_normal = (src_normal * 255).astype(np.uint8)
         object_mask = np.all(src_normal == 0, axis=-1)
 
-        # todo LAB should be default behavior
         if args.LAB:
             src_normal = cv2.cvtColor(src_normal, cv2.COLOR_RGB2LAB)
         else:
-            src_normal = cv2.cvtColor(src_normal, cv2.COLOR_RGB2BGR)
+            raise ValueError('Released model was trained in LAB space.')
 
         # Project model kpoints in 2D
         kpoints_2d_step_dict = {}
