@@ -68,7 +68,7 @@ While the focus is on the *viewport*, keyboard can be used to move around the ob
 
 *Notice*: it may happen that when starting the program, open3D does not render anything. This is an initialization issue. In case this happens, just focus on the *viewport* and press spacebar a couple of times until you see both windows rendered properly.
 
-## Supplementary Material
+## Supplementary animations
 
 ### Results for *chair* class
 
@@ -87,21 +87,6 @@ Manipulating radius        |  Manipulation elevation   | Arbitrary rototranslati
 Chairs backflip                      |
 :-----------------------------------:|
 ![](gifs/chair_rotate_and_back.gif)  |
-
-### Data augmentation (see Sec. 4.4)
-
-Additional examples generated synthetically using our model are shown below.
-
-Each row is generated as follows. Given an image from [Pascal3D+](http://cvgl.stanford.edu/projects/pascal3d.html), other examples in the same pose are randomly sampled from the dataset. Then, our method is used to transfer the appearance of the latter to the pose of the first. Eventually, generated vehicles are stiched upon the original image. For a seamless collaging, we perform a small Gaussian blur at the mask border.
-
-<p align="center">
-  <img src="imgs/aug_data_supp.jpg"/ alt="Generated data" width="80%">
-</p>
-
-Percentage of Correct Keypoints (PCK) logged in TensorBoard during training (see Sec. 4.4)
-<p align="center">
-  <img src="imgs/pck_graph.png"/ alt="PCK graph" width="80%">
-</p>
 
 ---
 
