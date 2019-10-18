@@ -14,6 +14,12 @@ This careful blend between parametric and non-parametric components allows us to
 
 Eventually, we show that our approach can be easily extended to other rigid objects with completely different topology, even in presence of concave structures and holes (e.g. chairs). A comprehensive experimental analysis against state-of-the-art competitors shows the efficacy of our method both from a quantitative and a perceptive point of view.
 
+<p align="center">
+  <img src="imgs/architecture.png"/ alt="Model architecture">
+</p>
+
+---
+
 ## Paper
 
 <p align="center">
@@ -34,7 +40,7 @@ Eventually, we show that our approach can be easily extended to other rigid obje
 </table> 
 </p>
 
-
+---
 
 ## Code
 
@@ -73,6 +79,8 @@ The GUI is composed of two windows: the *viewport* and the *output* one.
 While the focus is on the *viewport*, keyboard can be used to move around the object in spherical coordinates. [Here](https://github.com/iccv19sub265/semiparametric/blob/master/help.txt) the full list of commands is provided. While you move, the *output* shows both Image Completion Network (ICN) inputs (2.5D sketches, appearance prior) and network prediction. Please refer to Sec.3 of the paper for details.
 
 *Notice*: it may happen that when starting the program, open3D does not render anything. This is an initialization issue. In case this happens, just focus on the *viewport* and press spacebar a couple of times until you see both windows rendered properly.
+
+---
 
 ## Supplementary animations
 
