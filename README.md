@@ -12,7 +12,7 @@ In particular, we exploit man-made object symmetry and piece-wise planarity to i
 
 This careful blend between parametric and non-parametric components allows us to i) operate in a real-world scenario, ii) preserve high-frequency visual information such as textures, iii) handle truly arbitrary 3D roto-translations of the input and iv) perform shape transfer to completely different 3D models.
 
-Eventually, we show that our approach can be easily extended to other rigid objects with completely different topology, even in presence of concave structures and holes (e.g. chairs). A comprehensive experimental analysis against state-of-the-art competitors shows the efficacy of our method both from a quantitative and a perceptive point of view.
+Eventually, we show that our approach can be easily complemented with synthetic data and extended to other rigid objects with completely different topology, even in presence of concave structures and holes (e.g. chairs). A comprehensive experimental analysis against state-of-the-art competitors shows the efficacy of our method both from a quantitative and a perceptive point of view.
 
 <p align="center">
   <img src="imgs/architecture.png"/ alt="Model architecture">
