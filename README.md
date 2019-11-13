@@ -29,7 +29,7 @@ Eventually, we show that our approach can be easily complemented with synthetic 
   </tr>
   <tr>
   <td><pre>  
-@article{palazzi2019semi,
+@article{palazzi2019warp,
   title={Warp and Learn: Novel Views Generation for Vehicles and Other Objects},
   author={Palazzi, Andrea and Bergamini, Luca and Calderara, Simone and Cucchiara, Rita},
   journal={arXiv preprint arXiv:1907.10634},
