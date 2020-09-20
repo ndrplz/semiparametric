@@ -68,7 +68,7 @@ replace *chair* with *car* to run on the chair class.
 
 ### Description and usage
 
-If everything went well,, you should see a GUI like the following:
+You should now see a GUI like the following:
 
 <p align="center">
   <img src="imgs/viewport.png"/ alt="Viewport" width="80%">
