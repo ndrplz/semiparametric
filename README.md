@@ -4,6 +4,38 @@
   <img src="gifs/teaser_car.gif"/ alt="Rotating cars">
 </p>
 
+
+## Paper
+
+This code accompanies the following **TPAMI 2020** paper:
+
+> A. Palazzi, L. Bergamini, S. Calderara and R. Cucchiara, "Warp and Learn: Novel Views Generation for Vehicles and Other Objects," in IEEE Transactions on Pattern Analysis and Machine Intelligence, doi: 10.1109/TPAMI.2020.3030701
+
+available in Open Access **[here](https://ieeexplore.ieee.org/document/9222285)**. 
+
+If you find the code / data in this repository useful for your research work, please cite the respective publication.
+
+<p align="center">
+ <table>
+  <tr>
+  <td align="center"><a href="https://arxiv.org/abs/1907.10634" target="_blank"><img src="imgs/paper_thumb.png" width="160px"/></a></td>
+  </tr>
+  <tr>
+  <td><pre>  
+@article{palazzi2020warp,
+  title={Warp and Learn: Novel Views Generation for Vehicles and Other Objects},
+  author={Palazzi, Andrea and Bergamini, Luca and Calderara, Simone and Cucchiara, Rita},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year={2020},
+  publisher={IEEE},
+  doi={10.1109/TPAMI.2020.3030701},
+  ISSN={1939-3539}
+}
+</pre></td>
+  </tr>
+</table> 
+</p>
+
 ## Abstract
 
 In this work we introduce a new semi-parametric approach for synthesizing novel views of a vehicle starting from a single monocular image. Differently from *parametric* (i.e. entirely learning-based) methods, we show how *a-priori* geometric knowledge about the object and the 3D world can be successfully integrated into a deep learning based image generation framework. As this geometric component is not learnt, we call our approach *semi-parametric*.
@@ -16,28 +48,6 @@ Eventually, we show that our approach can be easily complemented with synthetic 
 
 <p align="center">
   <img src="imgs/architecture.png"/ alt="Model architecture">
-</p>
-
----
-
-## Paper
-
-<p align="center">
- <table>
-  <tr>
-  <td align="center"><a href="https://arxiv.org/abs/1907.10634" target="_blank"><img src="imgs/paper_thumb.png" width="200px"/></a></td>
-  </tr>
-  <tr>
-  <td><pre>  
-@article{palazzi2019warp,
-  title={Warp and Learn: Novel Views Generation for Vehicles and Other Objects},
-  author={Palazzi, Andrea and Bergamini, Luca and Calderara, Simone and Cucchiara, Rita},
-  journal={arXiv preprint arXiv:1907.10634},
-  year={2019}
-}
-</pre></td>
-  </tr>
-</table> 
 </p>
 
 ---
