@@ -1,5 +1,5 @@
 open3d-python==0.5.0.0
-opencv-python==4.0.0.21
+opencv-python==4.1.1.26
 ptable==0.9.2
 pyyaml==5.1
 scipy==1.2.1
